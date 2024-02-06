@@ -13,7 +13,7 @@ def moving_average(values, window):
     return np.convolve(values, weights, "valid")
 
 
-def plot_results(log_folder, title="Learning Curve"):
+def plot_results(log_folder, title="Learning Curve", shift = 0):
     """
     plot the results
 
@@ -26,11 +26,14 @@ def plot_results(log_folder, title="Learning Curve"):
     x = x[len(x) - len(y) :]
 
     fig = plt.figure(title)
-    plt.plot(x, y)
+    plt.plot(x, y, label=log_folder)
     plt.xlabel("Number of Timesteps")
     plt.ylabel("Rewards")
     plt.title(title + " Smoothed")
 
-plot_results("default-ppo-normalize")
-plot_results("treecounter-ppo-normalize")
+plot_results("MountainCarContinuous-v0-counting-normalize-16384")
+plot_results("MountainCarContinuous-v0-counting-normalize-16384-explo_stp20000")
+plot_results("MountainCarContinuous-v0-normalize-")
+plt.legend()
+
 plt.show()

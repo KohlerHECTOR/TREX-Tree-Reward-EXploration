@@ -47,14 +47,14 @@ class TreeCounter:
             self.S, self.A, self.R, self.Snext = (
                 S.reshape(1, -1),
                 A.reshape(1, -1),
-                R.reshape(-1, 1),
+                np.array([R]).reshape(-1, 1),
                 Snext.reshape(1, -1),
             )
             self.initialized = True
         else:
             self.S = np.concatenate((self.S, S.reshape(1, -1)), axis=0)
             self.A = np.concatenate((self.A, A.reshape(1, -1)), axis=0)
-            self.R = np.concatenate((self.R, R.reshape(-1, 1)), axis=0)
+            self.R = np.concatenate((self.R, np.array([R]).reshape(-1, 1)), axis=0)
             self.Snext = np.concatenate((self.Snext, Snext.reshape(1, -1)), axis=0)
 
     def update_dict(self):
@@ -211,12 +211,10 @@ class TreeWrapper(gym.Wrapper, gym.utils.RecordConstructorArgs):
             bonus = 0
         self.tot_step_tc += 1
 
-        if not(self.only_warm_start and self.updated_once) and self.explo_steps > 0:
+        if not(self.only_warm_start and self.tc.is_fitted) and self.explo_steps > 0:
             self.tc.update_buffers(self.current_state_tc, action, r, snext)
-
             if (self.tot_step_tc % self.update_tc_freq == 0 ):
                 self.tc.update()
-                self.updated_once = True
 
         self.current_state_tc = snext
         reward = r + (self.explo_steps > 0) * bonus
