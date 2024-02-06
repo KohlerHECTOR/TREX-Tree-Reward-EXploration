@@ -31,9 +31,11 @@ def plot_results(log_folder, title="Learning Curve", shift = 0):
     plt.ylabel("Rewards")
     plt.title(title + " Smoothed")
 
-plot_results("MountainCarContinuous-v0-counting-normalize-16384")
-plot_results("MountainCarContinuous-v0-counting-normalize-16384-explo_stp20000")
-plot_results("MountainCarContinuous-v0-normalize-")
+plot_results("Swimmer-v4-normalize-")
+plot_results("Swimmer-v4-normalize-counting-16384-explo_stp50000-cvtree")
+plot_results("Swimmer-v4-normalize-counting-16384-explo_stp50000-cvtree-fixrng")
+plot_results("Swimmer-v4-normalize-counting-16384-explo_stp50000-tree")
+plot_results("Swimmer-v4-normalize-counting-16384-explo_stp50000-tree-fixrng")
 plt.legend()
 
 plt.show()
