@@ -187,7 +187,7 @@ class TreeCounterCV:
 
 
 class TreeWrapper(gym.Wrapper, gym.utils.RecordConstructorArgs):
-    def __init__(self, env: gym.Env, tc: TreeCounter, update_tc_freq: int, only_warm_start: bool = False):
+    def __init__(self, env: gym.Env, tc: TreeCounter, update_tc_freq: int, only_warm_start: bool = False, exploration_steps: int=50_000):
         gym.utils.RecordConstructorArgs.__init__(self)
         gym.Wrapper.__init__(self, env)
         self.current_state_tc = None
@@ -196,6 +196,7 @@ class TreeWrapper(gym.Wrapper, gym.utils.RecordConstructorArgs):
         self.update_tc_freq = update_tc_freq
         self.only_warm_start = only_warm_start
         self.updated_once = False
+        self.explo_steps = exploration_steps
 
     def reset(self, **kwargs):
         self.current_state_tc, infos = self.env.reset()
@@ -205,16 +206,18 @@ class TreeWrapper(gym.Wrapper, gym.utils.RecordConstructorArgs):
         snext, r, term, trunc, infos = self.env.step(action)
         if self.tc.is_fitted:
             bonus = 1 / np.sqrt(self.tc.count(self.current_state_tc, action))
+            self.explo_steps - 1
         else:
             bonus = 0
         self.tot_step_tc += 1
-        self.tc.update_buffers(self.current_state_tc, action, r, snext)
 
-        if not(self.only_warm_start and self.updated_once):
+        if not(self.only_warm_start and self.updated_once) and self.explo_steps > 0:
+            self.tc.update_buffers(self.current_state_tc, action, r, snext)
+
             if (self.tot_step_tc % self.update_tc_freq == 0 ):
                 self.tc.update()
                 self.updated_once = True
 
         self.current_state_tc = snext
-
-        return self.current_state_tc, r + bonus, term, trunc, infos
+        reward = r + (self.explo_steps > 0) * bonus
+        return self.current_state_tc, reward, term, trunc, infos

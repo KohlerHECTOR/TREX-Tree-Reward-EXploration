@@ -1,34 +1,43 @@
 from stable_baselines3 import PPO
 import gymnasium as gym
-from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.monitor import Monitor
 import torch as th
 from tree_counters import TreeCounter, TreeCounterCV, TreeWrapper
-
+import os
+import numpy as np
 
 class TREX:
     def __init__(
         self,
         env_id: str,
+        exp_name: str,
         on_policy_algorithm = PPO,
+        count: bool = True, 
         normalize_env: bool = False,
         counter_cls = TreeCounter,
         counter_updt_freq: int = 16384,
-        warm_start: bool = True,
         warm_start_only: bool = False,
+        exploration_steps: int = np.inf
     ):
         self.env_id = env_id
         env = gym.make(self.env_id)
+        log_dir = exp_name+'/'
+        os.makedirs(log_dir, exist_ok=True)
+        self.env = Monitor(env, log_dir)
         if normalize_env:
-            env = gym.wrappers.NormalizeReward(env)
-            env = gym.wrappers.NormalizeObservation(env)
+            self.env = gym.wrappers.NormalizeReward(self.env)
+            self.env = gym.wrappers.NormalizeObservation(self.env)
         # env = TreeWrapper(env, TreeCounter(), 16384)
-            
-        self.tree_counter = counter_cls()
-        self.counter_updt_freq = counter_updt_freq
-        self.env = TreeWrapper(env, self.tree_counter, self.counter_updt_freq, only_warm_start=warm_start_only)
-        self.agent = on_policy_algorithm("MlpPolicy", self.env)
-        self.warm_start = warm_start
+        
+        if count:
+            self.tree_counter = counter_cls()
+            self.counter_updt_freq = counter_updt_freq
+            self.env = TreeWrapper(self.env, self.tree_counter, self.counter_updt_freq, only_warm_start=warm_start_only, exploration_steps=exploration_steps)
+            self.warm_start = True
+        else:
+            self.warm_start = False
+
+        self.agent = on_policy_algorithm("MlpPolicy", self.env, verbose=1)
 
     def do_warm_start(self):
         s = self.agent.get_env().reset()
@@ -39,26 +48,13 @@ class TREX:
                 s = self.agent.get_env().reset()
 
     def learn(self, total_timesteps:int = 100_000):
-        self.timesteps = total_timesteps
         if self.warm_start:
             self.do_warm_start()
+        self.agent.learn(total_timesteps, progress_bar=True)
         
-        eval_env = Monitor(gym.make(self.env_id))
-        # Use deterministic actions for evaluation
-        eval_callback = EvalCallback(
-            eval_env,
-            best_model_save_path="./logs/",
-            log_path="./logs/",
-            eval_freq=total_timesteps//20,
-            deterministic=True,
-            render=False,
-            verbose=1,
-        )
-
-        self.agent.learn(total_timesteps, callback=eval_callback, progress_bar=True)
 
         
 
 if __name__ == "__main__":
-    trex = TREX("Swimmer-v4")
+    trex = TREX("Pendulum-v1", exp_name="treecounter-ppo-normalize-half-explo", normalize_env=True, count=True, exploration_steps=50_000)
     trex.learn()
