@@ -5,7 +5,7 @@ from sklearn.model_selection import GridSearchCV
 
 class TreeCounter:
     def __init__(self):
-        self.model = DecisionTreeRegressor(max_depth=14, random_state=42)
+        self.model = DecisionTreeRegressor(random_state=42)
         self.dict_leaves = {}
         self.initialized = False
         self.is_fitted = False
@@ -98,7 +98,7 @@ class TreeCounter:
 class TreeCounterCV:
     def __init__(self):
         self.model = GridSearchCV(
-            DecisionTreeRegressor(random_state=42),
+            DecisionTreeRegressor(),
             param_grid={"max_depth": np.arange(7, 13)},
             n_jobs=6,
         )
@@ -138,14 +138,14 @@ class TreeCounterCV:
             self.S, self.A, self.R, self.Snext = (
                 S.reshape(1, -1),
                 A.reshape(1, -1),
-                R.reshape(-1, 1),
+                np.array([R]).reshape(-1, 1),
                 Snext.reshape(1, -1),
             )
             self.initialized = True
         else:
             self.S = np.concatenate((self.S, S.reshape(1, -1)), axis=0)
             self.A = np.concatenate((self.A, A.reshape(1, -1)), axis=0)
-            self.R = np.concatenate((self.R, R.reshape(-1, 1)), axis=0)
+            self.R = np.concatenate((self.R, np.array([R]).reshape(-1, 1)), axis=0)
             self.Snext = np.concatenate((self.Snext, Snext.reshape(1, -1)), axis=0)
 
     def update_dict(self):
