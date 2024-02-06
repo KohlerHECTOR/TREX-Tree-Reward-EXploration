@@ -49,7 +49,7 @@ class TREX:
             eval_env,
             best_model_save_path="./logs/",
             log_path="./logs/",
-            eval_freq=total_timesteps//100,
+            eval_freq=total_timesteps//20,
             deterministic=True,
             render=False,
             verbose=1,
@@ -60,5 +60,5 @@ class TREX:
         
 
 if __name__ == "__main__":
-    trex = TREX("Swimmer-v4", PPO, warm_start=True, warm_start_only=True)
+    trex = TREX("Swimmer-v4")
     trex.learn()
