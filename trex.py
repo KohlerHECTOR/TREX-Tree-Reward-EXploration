@@ -55,5 +55,5 @@ class TREX:
         
 
 if __name__ == "__main__":
-    trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounter, exploration_steps=50_000)
+    trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounterCV, exploration_steps=50_000)
     trex.learn()

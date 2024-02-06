@@ -98,7 +98,7 @@ class TreeCounter:
 class TreeCounterCV:
     def __init__(self):
         self.model = GridSearchCV(
-            DecisionTreeRegressor(),
+            DecisionTreeRegressor(random_state=42),
             param_grid={"max_depth": np.arange(7, 13)},
             n_jobs=6,
         )
