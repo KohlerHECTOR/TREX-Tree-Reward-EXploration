@@ -2,7 +2,7 @@
 - Normlalize Observation cf [RND-PPO](https://arxiv.org/abs/1810.12894) (*Implemented*).
 - In practice, normalize rewards does not seem to work as running means do not incorporate well sparse high-rewards (*Implemented*). 
 - Bisimilarity Measure [MICO](https://arxiv.org/pdf/2106.08229.pdf]) (two pairs $(s, a)$ should have a similar bisimiliratiy measure if they lead to similar\ 
-$(r, s\_{t+1} )$) (*Not Implemented*).
+$(r, s_n )$) (*Not Implemented*).
 - Non-episodic returns, cf [RND-PPO](https://arxiv.org/abs/1810.12894), $\texttt{env.reset()}$ is called only after a policy update is performed (*Not Implemented*).
 
 ##### Tree models and counters.
