@@ -59,6 +59,5 @@ class TREX:
         
 
 if __name__ == "__main__":
-    trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounterCVRewardOnly)
-
+    trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounter, max_leaves=True)
     trex.learn()
