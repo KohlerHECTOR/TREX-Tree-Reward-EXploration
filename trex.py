@@ -5,6 +5,8 @@ import torch as th
 from tree_counters import TreeCounter, TreeCounterCV, TreeWrapper, ForestCounter, TreeCounterCVWSOnly, TreeCounterWSOnly
 import os
 import numpy as np
+import minigrid.wrappers as min_wrap
+from minigrid_extractor_ppo import MinigridFeaturesExtractor
 
 class TREX:
     def __init__(
@@ -17,6 +19,8 @@ class TREX:
         self.env_id = env_id
         env = gym.make(self.env_id)
 
+        
+
         if counter_cls is not None:
             self.count = True
             log_dir = "ppo-default-params/" + env_id + '-' +  (counter_cls().__class__.__name__ +'-' + str(counter_updt_freq))
@@ -24,17 +28,26 @@ class TREX:
             self.count = False
             log_dir = "ppo-default-params/" + env_id
 
+        
         os.makedirs(log_dir, exist_ok=True)
         self.env = Monitor(env, log_dir)
-            # self.env = gym.wrappers.NormalizeReward(self.env)
-        self.env = gym.wrappers.NormalizeObservation(self.env)
-        # env = TreeWrapper(env, TreeCounter(), 16384)
+
+        if env_id.split("-")[0] == "MiniGrid":
+            self.env = min_wrap.ImgObsWrapper(self.env)
+            policy_kwargs = dict(features_extractor_class=MinigridFeaturesExtractor,features_extractor_kwargs=dict(features_dim=128),)
+            pol = "CnnPolicy"
+
+        else:
+            self.env = gym.wrappers.NormalizeObservation(self.env)
+            pol = "MlpPolicy"
+            policy_kwargs = {}
+
         if self.count:
             self.tree_counter = counter_cls()
             self.counter_updt_freq = counter_updt_freq
             self.env = TreeWrapper(self.env, self.tree_counter, self.counter_updt_freq)
 
-        self.agent = on_policy_algorithm("MlpPolicy", self.env, verbose=1)
+        self.agent = on_policy_algorithm(pol, self.env, policy_kwargs=policy_kwargs, verbose=1)
 
     def do_warm_start(self):
         s = self.agent.get_env().reset()
@@ -58,9 +71,8 @@ if __name__ == "__main__":
     # trex = TREX("MountainCarContinuous-v0") # PPO
     # trex.learn()
 
-
-    trex = TREX("MountainCarContinuous-v0", counter_cls=ForestCounter, counter_updt_freq=2048)
-    trex.learn()
+    # trex = TREX("MountainCarContinuous-v0", counter_cls=ForestCounter, counter_updt_freq=2048)
+    # trex.learn()
 
     # trex = TREX("MountainCarContinuous-v0", counter_cls=TreeCounter)
     # trex.learn()
@@ -73,6 +85,9 @@ if __name__ == "__main__":
 
     # trex = TREX("MountainCarContinuous-v0", counter_cls=TreeCounterCVWSOnly)
     # trex.learn()
+
+    trex = TREX("MiniGrid-Empty-5x5-v0")
+    trex.learn()
 
 
 
