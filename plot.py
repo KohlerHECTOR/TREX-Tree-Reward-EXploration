@@ -26,16 +26,19 @@ def plot_results(log_folder, title="Learning Curve", shift = 0):
     x = x[len(x) - len(y) :]
 
     fig = plt.figure(title)
-    plt.plot(x, y, label=log_folder)
+    plt.plot(x, y, label=log_folder.split("/")[1])
     plt.xlabel("Number of Timesteps")
     plt.ylabel("Rewards")
     plt.title(title + " Smoothed")
 
-plot_results("logs/Swimmer-v4-normalize-")
-plot_results("logs/Swimmer-v4-normalize-counting-16384-explo_stp50000-cvtree")
-plot_results("logs/Swimmer-v4-normalize-counting-16384-explo_stp50000-cvtree-fixrng")
-plot_results("logs/Swimmer-v4-normalize-counting-16384-explo_stp50000-tree")
-plot_results("logs/Swimmer-v4-normalize-counting-16384-explo_stp50000-tree-fixrng")
+
+
+plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounterCV-16384")
+plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounterCVWSOnly-16384")
+plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounter-16384")
+plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounterWSOnly-16384")
+plot_results("ppo-default-params/MountainCarContinuous-v0")
+
 plt.legend()
 
-plt.show()
+plt.savefig("MountainCar.pdf")
