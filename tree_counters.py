@@ -205,22 +205,17 @@ class TreeCounterCVRewardOnly:
         print("Score Tree: {}".format(self.model.best_score_))
 
     def fit(self):
-        self.model.fit(
-            np.concatenate((self.S, self.A), axis=1),
-            np.concatenate((self.R, self.Snext), axis=1),
-        )
+        self.model.fit(np.concatenate((self.S, self.A), axis=1),self.R)
         self.is_fitted = True
 
     def count(self, s: np.ndarray, a: np.ndarray):
-        rsnext = self.model.best_estimator_.predict(
+        r = self.model.best_estimator_.predict(
             np.concatenate((s, a)).reshape(1, -1)
         )[0]
-        rsnext_l = rsnext.tolist()
-        rsnexttpl = tuple(rsnext_l)
-        self.dict_leaves[rsnexttpl] += 1
+        self.dict_leaves[r] += 1
         # if self.dict_leaves[rsnexttpl] > 2:
         #     print("counting might work")
-        return self.dict_leaves[rsnexttpl]
+        return self.dict_leaves[r]
 
     def update_buffers(
         self, S: np.ndarray, A: np.ndarray, R: np.ndarray, Snext: np.ndarray
@@ -269,10 +264,8 @@ class TreeCounterCVRewardOnly:
         for i in range(n_nodes):
             if is_leaves[i]:
                 tot_leaves += 1
-                ksq = values[i].squeeze()
-                k_l = ksq.tolist()
-                ktpl = tuple(k_l)
-                self.dict_leaves[ktpl] = self.dict_leaves.get(ktpl, 0)
+                ksq = values[i]
+                self.dict_leaves[ksq] = self.dict_leaves.get(ksq, 0)
 
         print("New Tree has {}".format(tot_leaves))
 

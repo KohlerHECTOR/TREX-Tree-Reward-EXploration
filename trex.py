@@ -13,7 +13,7 @@ class TREX:
         on_policy_algorithm = PPO,
         count: bool = True, 
         normalize_env: bool = False,
-        counter_cls = TreeCounter,
+        counter_cls = TreeCounterCV,
         counter_updt_freq: int = 16384,
         warm_start_only: bool = False,
         exploration_steps: int = np.inf
@@ -27,7 +27,7 @@ class TREX:
             # self.env = gym.wrappers.NormalizeReward(self.env)
             self.env = gym.wrappers.NormalizeObservation(self.env)
         # env = TreeWrapper(env, TreeCounter(), 16384)
-        
+        self.count = count
         if count:
             self.tree_counter = counter_cls()
             self.counter_updt_freq = counter_updt_freq
@@ -46,7 +46,9 @@ class TREX:
             if done:
                 s = self.agent.get_env().reset()
 
-    def learn(self, total_timesteps:int = 100_000):
+    def learn(self, total_timesteps:int = 200_000):
+        if self.count:
+            total_timesteps -= self.counter_updt_freq # warm start already does some timesteps even though w/o learning
         if self.warm_start:
             self.do_warm_start()
         self.agent.learn(total_timesteps, progress_bar=True)
@@ -55,5 +57,28 @@ class TREX:
         
 
 if __name__ == "__main__":
-    trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounterCV, exploration_steps=50_000)
+    trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounterCV)
+
+    trex.learn()
+
+    trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounterCV, counter_updt_freq=2048)
+
+    trex.learn()
+
+    trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounterCV, counter_updt_freq=int(2**15))
+
+    trex.learn()
+
+
+
+    # trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounter)
+    trex = TREX("Swimmer-v4", normalize_env=True, count=False)
+
+    trex.learn()
+
+    trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounterCV, warm_start_only=True, counter_updt_freq=50_000)
+
+    trex.learn()
+
+    trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounterCV, counter_updt_freq=50_000, exploration_steps=50_000) # does warm start + 1 update update
     trex.learn()
