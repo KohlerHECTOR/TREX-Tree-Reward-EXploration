@@ -21,13 +21,17 @@ def plot_results(log_folder, title="Learning Curve", shift = 0):
     :param title: (str) the title of the task to plot
     """
     x, y = ts2xy(load_results(log_folder), "timesteps")
-    y = moving_average(y, window=50)
+    y = moving_average(y[:25], window=5)
     # Truncate x
-    x = x[len(x) - len(y) :]
+    # x = x[len(x) - len(y) :]
 
     fig = plt.figure(title)
-    plt.plot(x, y, label=log_folder.split("/")[1])
-    plt.xlabel("Number of Timesteps")
+    label = log_folder.split("-")
+    if label[-1] == 'v0':
+        label = 'No-eploration'
+    else: label = label[-2] + '-freq-' + label[-1]
+    plt.plot(y, label=label)
+    plt.xlabel("episode")
     plt.ylabel("Rewards")
     plt.title(title + " Smoothed")
 
@@ -38,7 +42,8 @@ plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounterCVWSOnly-16
 plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounter-16384")
 plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounterWSOnly-16384")
 plot_results("ppo-default-params/MountainCarContinuous-v0")
-
+plot_results('ppo-default-params/MountainCarContinuous-v0-ForestCounter-2048')
+plt.grid()
 plt.legend()
 
 plt.savefig("MountainCar.pdf")
