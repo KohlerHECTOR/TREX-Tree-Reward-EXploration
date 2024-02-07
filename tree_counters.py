@@ -264,7 +264,7 @@ class TreeCounterCVRewardOnly:
         for i in range(n_nodes):
             if is_leaves[i]:
                 tot_leaves += 1
-                ksq = values[i]
+                ksq = float(values[i])
                 self.dict_leaves[ksq] = self.dict_leaves.get(ksq, 0)
 
         print("New Tree has {}".format(tot_leaves))

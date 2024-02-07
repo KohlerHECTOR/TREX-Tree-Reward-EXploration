@@ -2,7 +2,7 @@ from stable_baselines3 import PPO
 import gymnasium as gym
 from stable_baselines3.common.monitor import Monitor
 import torch as th
-from tree_counters import TreeCounter, TreeCounterCV, TreeWrapper
+from tree_counters import TreeCounter, TreeCounterCV, TreeWrapper, TreeCounterCVRewardOnly
 import os
 import numpy as np
 
@@ -57,28 +57,6 @@ class TREX:
         
 
 if __name__ == "__main__":
-    trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounterCV)
+    trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounterCVRewardOnly)
 
-    trex.learn()
-
-    trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounterCV, counter_updt_freq=2048)
-
-    trex.learn()
-
-    trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounterCV, counter_updt_freq=int(2**15))
-
-    trex.learn()
-
-
-
-    # trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounter)
-    trex = TREX("Swimmer-v4", normalize_env=True, count=False)
-
-    trex.learn()
-
-    trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounterCV, warm_start_only=True, counter_updt_freq=50_000)
-
-    trex.learn()
-
-    trex = TREX("Swimmer-v4", normalize_env=True, count=True, counter_cls=TreeCounterCV, counter_updt_freq=50_000, exploration_steps=50_000) # does warm start + 1 update update
     trex.learn()
