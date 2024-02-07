@@ -40,6 +40,7 @@ def plot_results(log_folder, title):
 plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounterCV-16384", "MountainCarContinuous-v0")
 plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounterCVWSOnly-16384", "MountainCarContinuous-v0")
 plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounter-16384", "MountainCarContinuous-v0")
+plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounter-2048", "MountainCarContinuous-v0")
 plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounterWSOnly-16384", "MountainCarContinuous-v0")
 plot_results("ppo-default-params/MountainCarContinuous-v0", "MountainCarContinuous-v0")
 plot_results('ppo-default-params/MountainCarContinuous-v0-ForestCounter-2048', "MountainCarContinuous-v0")

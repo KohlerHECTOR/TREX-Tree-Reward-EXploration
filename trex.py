@@ -77,6 +77,9 @@ if __name__ == "__main__":
     # trex = TREX("MountainCarContinuous-v0", counter_cls=TreeCounter)
     # trex.learn()
 
+    # trex = TREX("MountainCarContinuous-v0", counter_cls=TreeCounter, counter_updt_freq=2048)
+    # trex.learn()
+
     # trex = TREX("MountainCarContinuous-v0", counter_cls=TreeCounterCV)
     # trex.learn()
 
@@ -86,7 +89,10 @@ if __name__ == "__main__":
     # trex = TREX("MountainCarContinuous-v0", counter_cls=TreeCounterCVWSOnly)
     # trex.learn()
 
-    trex = TREX("MiniGrid-Empty-5x5-v0")
+    # trex = TREX("MiniGrid-Empty-5x5-v0")
+    # trex.learn()
+
+    trex = TREX("MiniGrid-Empty-5x5-v0", counter_cls=ForestCounter, counter_updt_freq=2048)
     trex.learn()
 
 
