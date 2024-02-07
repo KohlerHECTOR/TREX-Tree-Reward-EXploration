@@ -21,7 +21,7 @@ def plot_results(log_folder, title):
     :param title: (str) the title of the task to plot
     """
     x, y = ts2xy(load_results(log_folder), "timesteps")
-    y = moving_average(y[:50], window=10)
+    y = moving_average(y, window=50)
     # Truncate x
     # x = x[len(x) - len(y) :]
 
@@ -35,16 +35,11 @@ def plot_results(log_folder, title):
     plt.ylabel("Rewards")
     plt.title(title + " Smoothed Rewards")
 
+plot_results("ppo-default-params/MiniGrid-Empty-5x5-v0-TreeCounterMiniGridWSOnly-16384", "Minigrid")
+plot_results("ppo-default-params/MiniGrid-Empty-5x5-v0-TreeCounterMiniGrid-2048", "Minigrid")
+plot_results("ppo-default-params/MiniGrid-Empty-5x5-v0", "Minigrid")
 
-
-plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounterCV-16384", "MountainCarContinuous-v0")
-plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounterCVWSOnly-16384", "MountainCarContinuous-v0")
-plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounter-16384", "MountainCarContinuous-v0")
-plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounter-2048", "MountainCarContinuous-v0")
-plot_results("ppo-default-params/MountainCarContinuous-v0-TreeCounterWSOnly-16384", "MountainCarContinuous-v0")
-plot_results("ppo-default-params/MountainCarContinuous-v0", "MountainCarContinuous-v0")
-plot_results('ppo-default-params/MountainCarContinuous-v0-ForestCounter-2048', "MountainCarContinuous-v0")
 plt.grid()
 plt.legend()
 
-plt.savefig("MountainCar.png")
+plt.savefig("Minigrid.png")

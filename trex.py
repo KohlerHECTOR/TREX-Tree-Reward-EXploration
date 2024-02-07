@@ -2,7 +2,7 @@ from stable_baselines3 import PPO
 import gymnasium as gym
 from stable_baselines3.common.monitor import Monitor
 import torch as th
-from tree_counters import TreeCounter, TreeCounterCV, TreeWrapper, ForestCounter, TreeCounterCVWSOnly, TreeCounterWSOnly, TreeCounterMiniGrid
+from tree_counters import TreeCounter, TreeCounterCV, TreeWrapper, ForestCounter, TreeCounterCVWSOnly, TreeCounterWSOnly, TreeCounterMiniGrid, TreeCounterMiniGridWSOnly
 import os
 import numpy as np
 import minigrid.wrappers as min_wrap
@@ -97,8 +97,9 @@ if __name__ == "__main__":
     # trex = TREX("MiniGrid-Empty-5x5-v0")
     # trex.learn()
 
-    trex = TREX("MiniGrid-Empty-5x5-v0", counter_cls=TreeCounterMiniGrid, counter_updt_freq=2048)
+    trex = TREX("MiniGrid-Empty-5x5-v0", counter_cls=TreeCounterMiniGridWSOnly)
     trex.learn()
+
 
 
 

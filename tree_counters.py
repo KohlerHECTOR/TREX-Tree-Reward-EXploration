@@ -103,6 +103,33 @@ class TreeCounterMiniGrid(TreeCounter):
         A = np.array([A])
         super().update_buffers(S, A, Snext)
 
+class TreeCounterMiniGridWSOnly(TreeCounterMiniGrid):
+    def __init__(self):
+        super().__init__()
+        self.model = DecisionTreeRegressor(random_state=42, max_leaf_nodes=2**14)
+
+    def update(self):
+        if self.is_fitted:
+            return
+        else:
+            self.fit()
+
+    def count(self, s: np.ndarray, a: np.ndarray):
+        s = s.flatten()
+        a = np.array([a])
+        leaf = self.model.apply(np.concatenate((s, a)).reshape(1, -1))[0]
+        self.dict_leaves[leaf] = self.dict_leaves.get(leaf, 0) + 1
+        # if self.dict_leaves[snexttpl] > 2:
+        #     print("counting might work")
+        return self.dict_leaves[leaf]
+
+    def update_buffers(
+        self, S: np.ndarray, A: np.ndarray, Snext: np.ndarray
+    ):  
+        if self.is_fitted:
+            return
+        else:
+            super().update_buffers(S, A, Snext)
 
 class TreeCounterWSOnly(TreeCounter):
     def __init__(self):
