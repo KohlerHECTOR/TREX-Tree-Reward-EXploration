@@ -85,6 +85,25 @@ class TreeCounter:
             self.Snext = np.concatenate((self.Snext, Snext.reshape(1, -1)), axis=0)
 
 
+
+class TreeCounterMiniGrid(TreeCounter):
+    def __init__(self):
+        super().__init__()
+
+    def count(self, s: np.ndarray, a: np.ndarray):
+        s = s.flatten()
+        a = np.array([a])
+        return super().count(s, a)
+
+    def update_buffers(
+        self, S: np.ndarray, A: np.ndarray, Snext: np.ndarray
+    ):
+        S = S.flatten()
+        Snext = Snext.flatten()
+        A = np.array([A])
+        super().update_buffers(S, A, Snext)
+
+
 class TreeCounterWSOnly(TreeCounter):
     def __init__(self):
         super().__init__()
