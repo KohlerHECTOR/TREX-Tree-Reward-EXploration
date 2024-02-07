@@ -1,4 +1,5 @@
 ##### Exploration and Model Learning Tricks following this [blog](https://lilianweng.github.io/posts/2020-06-07-exploration-drl/):
+###### For Tree-Model-Based-Policy-Exploration see: https://github.com/KohlerHECTOR/Tree-MBPO
 - Normlalize Observation cf [RND-PPO](https://arxiv.org/abs/1810.12894) (*Implemented*).
 - In practice, normalize rewards does not seem to work as running means do not incorporate well sparse high-rewards (*Implemented*). 
 - Bisimilarity Measure [MICO](https://arxiv.org/pdf/2106.08229.pdf]) (two pairs $(s, a)$ should have a similar bisimiliratiy measure if they lead to similar
