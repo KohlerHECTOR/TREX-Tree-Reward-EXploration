@@ -20,7 +20,7 @@ class TREX:
     ):
         self.env_id = env_id
         env = gym.make(self.env_id)
-        log_dir = env_id + '-' + normalize_env * ('normalize' + '-')+ count * ("counting" + '-' + warm_start_only * ('only_wstrt' + '-')+ str(counter_updt_freq) + "-explo_stp" + str(exploration_steps))
+        log_dir = "logs/" + env_id + '-' + normalize_env * ('normalize' + '-')+ count * ("counting" + '-' + warm_start_only * ('only_wstrt' + '-')+ str(counter_updt_freq) + "-explo_stp" + str(exploration_steps))
         os.makedirs(log_dir, exist_ok=True)
         self.env = Monitor(env, log_dir)
         if normalize_env:
