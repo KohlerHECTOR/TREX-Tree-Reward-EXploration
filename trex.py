@@ -16,11 +16,13 @@ class TREX:
         counter_cls = TreeCounterCV,
         counter_updt_freq: int = 16384,
         warm_start_only: bool = False,
-        exploration_steps: int = np.inf
+        exploration_steps: int = np.inf,
+        max_leaves: bool = False
     ):
         self.env_id = env_id
         env = gym.make(self.env_id)
-        log_dir = "logs/" + env_id + '-' + normalize_env * ('normalize' + '-')+ count * ("counting" + '-' + warm_start_only * ('only_wstrt' + '-')+ str(counter_updt_freq) + "-explo_stp" + str(exploration_steps))
+
+        log_dir = "logs/" + env_id + '-' + normalize_env * ('normalize' + '-')+ count * (counter_cls().__class__.__name__ + max_leaves * 'max_leaves' + '-' + warm_start_only * ('only_wstrt' + '-')+ str(counter_updt_freq) + "-explo_stp" + str(exploration_steps))
         os.makedirs(log_dir, exist_ok=True)
         self.env = Monitor(env, log_dir)
         if normalize_env:
@@ -29,7 +31,7 @@ class TREX:
         # env = TreeWrapper(env, TreeCounter(), 16384)
         self.count = count
         if count:
-            self.tree_counter = counter_cls()
+            self.tree_counter = counter_cls(max_leaves)
             self.counter_updt_freq = counter_updt_freq
             self.env = TreeWrapper(self.env, self.tree_counter, self.counter_updt_freq, only_warm_start=warm_start_only, exploration_steps=exploration_steps)
             self.warm_start = True

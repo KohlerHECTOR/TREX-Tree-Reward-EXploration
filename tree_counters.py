@@ -4,8 +4,11 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import GridSearchCV
 
 class TreeCounter:
-    def __init__(self):
-        self.model = DecisionTreeRegressor(random_state=42)
+    def __init__(self, max_leaves: bool = False):
+        if max_leaves:
+            self.model = DecisionTreeRegressor(random_state=42, max_leaf_nodes=2**13)
+        else:
+            self.model = DecisionTreeRegressor(random_state=42, max_depth=13)
         self.dict_leaves = {}
         self.initialized = False
         self.is_fitted = False
@@ -96,12 +99,20 @@ class TreeCounter:
 
 
 class TreeCounterCV:
-    def __init__(self):
-        self.model = GridSearchCV(
-            DecisionTreeRegressor(random_state=42),
-            param_grid={"max_depth": np.arange(7, 13)},
-            n_jobs=6,
-        )
+    def __init__(self, max_leaves: bool=False):
+        if max_leaves:
+            self.model = GridSearchCV(
+                DecisionTreeRegressor(random_state=42),
+                param_grid={"max_leaf_nodes": 2**np.arange(7, 13)},
+                n_jobs=6,
+            )
+
+        else:
+            self.model = GridSearchCV(
+                DecisionTreeRegressor(random_state=42),
+                param_grid={"max_depth": np.arange(7, 13)},
+                n_jobs=6,
+            )
         self.dict_leaves = {}
         self.initialized = False
         self.is_fitted = False
@@ -187,12 +198,20 @@ class TreeCounterCV:
 
 
 class TreeCounterCVRewardOnly:
-    def __init__(self):
-        self.model = GridSearchCV(
-            DecisionTreeRegressor(random_state=42),
-            param_grid={"max_depth": np.arange(7, 13)},
-            n_jobs=6,
-        )
+    def __init__(self, max_leaves: bool=False):
+        if max_leaves:
+            self.model = GridSearchCV(
+                DecisionTreeRegressor(random_state=42),
+                param_grid={"max_leaf_nodes": 2**np.arange(7, 13)},
+                n_jobs=6,
+            )
+
+        else:
+            self.model = GridSearchCV(
+                DecisionTreeRegressor(random_state=42),
+                param_grid={"max_depth": np.arange(7, 13)},
+                n_jobs=6,
+            )
         self.dict_leaves = {}
         self.initialized = False
         self.is_fitted = False
